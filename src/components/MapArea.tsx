@@ -61,12 +61,6 @@ function MapComponent() {
     return (
         <>
             <div style={{ height: '100vh', width: '100%' }} id="map" className="map-container top-0 left-0" />
-
-            <DownloadButton
-                tileUrl="https://example.com/tileserver/image.png"
-                fileName="downloaded_image.png"
-            />
-
         </>
     );
 }
