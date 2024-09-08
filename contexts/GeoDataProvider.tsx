@@ -21,6 +21,7 @@ interface GeoDataProviderProps {
 
 interface RequestInfo {
     format: FileFormat;
+    rescale: boolean;
     colormap_name?: ColorMap;
 }
 
@@ -29,6 +30,7 @@ export const GeoDataProvider: React.FC<GeoDataProviderProps> = ({ children }) =>
     const [geoData, setGeoData] = useState<GeoJSON | null>(null);
     const [reqInfo, setReqInfo] = useState<RequestInfo>({
         format: "png",
+        rescale: false,
     });
     const [loading, setLoading] = useState<boolean>(false);
     // Fetch the GeoJSON data when the URL changes

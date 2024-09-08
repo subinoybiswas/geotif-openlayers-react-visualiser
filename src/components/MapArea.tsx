@@ -11,6 +11,7 @@ import { useGeoData } from '../../contexts/GeoDataProvider';
 import { GeoJSON } from '../../types/geojson';
 import { GetBandMetaData } from '../utils/GetBandMetaData';
 import { calculateCentroid } from '../utils/CalculateCentroid';
+import DownloadButton from './download/DownloadButton';
 
 function MapComponent() {
     const { geoData, url, setUrl, loading, setLoading, reqInfo } = useGeoData();
@@ -19,8 +20,11 @@ function MapComponent() {
             return;
         }
         const [longitude, latitude] = calculateCentroid((geoData as GeoJSON).geometry.coordinates);
-        let titilerEndpoint = `${TileEndpoint}.${reqInfo.format}?url=${url}&contrast=auto&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
-        if (reqInfo.colormap_name) {
+        let titilerEndpoint = `${TileEndpoint}.${reqInfo.format}?url=${url}`;
+        if (reqInfo.rescale && GetBandMetaData(geoData as GeoJSON) !== undefined) {
+            titilerEndpoint = `${titilerEndpoint}&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
+        }
+        if (reqInfo.colormap_name && reqInfo.colormap_name !== undefined) {
             titilerEndpoint = `${titilerEndpoint}&colormap_name=${reqInfo.colormap_name}`;
         }
         const osmLayer = new TileLayer({
@@ -55,7 +59,15 @@ function MapComponent() {
     }
 
     return (
-        <div style={{ height: '100vh', width: '100%' }} id="map" className="map-container top-0 left-0" />
+        <>
+            <div style={{ height: '100vh', width: '100%' }} id="map" className="map-container top-0 left-0" />
+
+            <DownloadButton
+                tileUrl="https://example.com/tileserver/image.png"
+                fileName="downloaded_image.png"
+            />
+
+        </>
     );
 }
 
