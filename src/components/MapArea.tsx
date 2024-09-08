@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
@@ -12,12 +12,13 @@ import { GeoJSON } from '../../types/geojson';
 import { GetBandMetaData } from '../GetBandMetaData';
 
 function MapComponent() {
-    const { geoData, url, setUrl } = useGeoData();
-    if (!geoData) {
-        return <div>Oops...</div>;
-    }
-    const titilerEndpoint = `${TileEndpoint}?url=${url}&contrast=auto&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
+    const { geoData, url, setUrl, loading, setLoading } = useGeoData();
+
     useEffect(() => {
+        if (geoData === null) {
+            return;
+        }
+        const titilerEndpoint = `${TileEndpoint}?url=${url}&contrast=auto&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
         const osmLayer = new TileLayer({
             preload: Infinity,
             source: new OSM(),
@@ -43,9 +44,12 @@ function MapComponent() {
         });
 
         return () => map.setTarget(undefined)
-    }, []);
+    }, [loading]);
 
-    
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
     return (
         <div style={{ height: '100vh', width: '100%' }} id="map" className="map-container top-0 left-0" />
     );

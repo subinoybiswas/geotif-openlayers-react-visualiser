@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { GeoJSON, GeoJSONError } from "../types/geojson.ts";
 import { GeoJSONEndpoint } from '../constants/consts.ts';
+import { set } from 'ol/transform';
 
 interface GeoDataContextType {
     geoData: GeoJSON | GeoJSONError | null;
     url: string;
     setUrl: React.Dispatch<React.SetStateAction<string>>;
+    loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 
 }
 
@@ -18,20 +21,22 @@ interface GeoDataProviderProps {
 export const GeoDataProvider: React.FC<GeoDataProviderProps> = ({ children }) => {
     const [url, setUrl] = useState<string>("https://final-cog.s3.ap-south-1.amazonaws.com/test_cog.tif");
     const [geoData, setGeoData] = useState<GeoJSON | null>(null);
-
+    const [loading, setLoading] = useState<boolean>(false);
     // Fetch the GeoJSON data when the URL changes
     useEffect(() => {
         const fetchGeoData = async () => {
             try {
+                setLoading(true);
                 const response = await fetch(`${GeoJSONEndpoint}?url=${url}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch geo data');
                 }
                 const data: GeoJSON = await response.json();
                 setGeoData(data);
+                setLoading(false);
             } catch (err) {
                 setGeoData(null);
-
+                setLoading(false);
             }
         };
 
@@ -39,7 +44,7 @@ export const GeoDataProvider: React.FC<GeoDataProviderProps> = ({ children }) =>
     }, [url]);
 
     return (
-        <GeoDataContext.Provider value={{ geoData, url, setUrl }}>
+        <GeoDataContext.Provider value={{ geoData, url, setUrl, loading, setLoading }}>
             {children}
         </GeoDataContext.Provider>
     );
