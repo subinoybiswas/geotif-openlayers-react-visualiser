@@ -9,15 +9,16 @@ import LayerGroup from 'ol/layer/Group';
 import { TileEndpoint } from '../../constants/consts';
 import { useGeoData } from '../../contexts/GeoDataProvider';
 import { GeoJSON } from '../../types/geojson';
-import { GetBandMetaData } from '../GetBandMetaData';
+import { GetBandMetaData } from '../utils/GetBandMetaData';
+import { calculateCentroid } from '../utils/CalculateCentroid';
 
 function MapComponent() {
     const { geoData, url, setUrl, loading, setLoading } = useGeoData();
-
     useEffect(() => {
         if (geoData === null) {
             return;
         }
+        const [longitude, latitude] = calculateCentroid((geoData as GeoJSON).geometry.coordinates);
         const titilerEndpoint = `${TileEndpoint}?url=${url}&contrast=auto&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
         const osmLayer = new TileLayer({
             preload: Infinity,
@@ -26,8 +27,8 @@ function MapComponent() {
         const tileLayer = new TileLayer({
             source: new XYZ({
                 url: titilerEndpoint, // The TiTiler URL to fetch tiles
-                maxZoom: 18,          // Set the maximum zoom level (adjust as needed)
-                tileSize: 512,        // Tile size (256x256 is typical)
+                maxZoom: (geoData as GeoJSON).properties.maxzoom,          // Set the maximum zoom level (adjust as needed)
+                tileSize: 512,
             }),
         });
         const VisibleLayerGroup = new LayerGroup({
@@ -38,8 +39,8 @@ function MapComponent() {
             target: 'map',
             layers: [VisibleLayerGroup],
             view: new View({
-                center: fromLonLat([75, 0]), // Adjust to your area of interest
-                zoom: 2,                     // Set the initial zoom level
+                center: fromLonLat([longitude, latitude]), // Adjust to your area of interest
+                zoom: (geoData as GeoJSON).properties.minzoom,                     // Set the initial zoom level
             }),
         });
 

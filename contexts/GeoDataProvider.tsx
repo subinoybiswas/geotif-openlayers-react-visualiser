@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { GeoJSON, GeoJSONError } from "../types/geojson.ts";
 import { GeoJSONEndpoint } from '../constants/consts.ts';
-import { set } from 'ol/transform';
 
 interface GeoDataContextType {
     geoData: GeoJSON | GeoJSONError | null;
