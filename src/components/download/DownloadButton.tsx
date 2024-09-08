@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '../ui/button';
 
 interface DownloadButtonProps {
     tileUrl: string;  // The URL to the tiling server or image
@@ -26,9 +27,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ tileUrl, fileName }) =>
     };
 
     return (
-        <button onClick={downloadImage} className="download-button">
-            Download Image
-        </button>
+
+        <Button variant="secondary" onClick={downloadImage}>Download Raw</Button>
+
     );
 };
 

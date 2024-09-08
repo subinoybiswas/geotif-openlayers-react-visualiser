@@ -6,10 +6,11 @@ import { Input } from "./ui/input";
 import { useGeoData } from "../../contexts/GeoDataProvider";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import DownloadButton from "./download/DownloadButton";
 
 export default function MenuArea() {
     const [temp, setTemp] = useState('')
-    const { setUrl, setReqInfo, reqInfo } = useGeoData();
+    const { setUrl, setReqInfo, reqInfo, url } = useGeoData();
     return (
         <div className='bg-white flex-1 my-20 ml-10 rounded-lg min-w-[300px] flex justify-center shadow-xl flex-col gap-5 items-center'>
             <MenuItem name="Data Source">
@@ -37,6 +38,7 @@ export default function MenuArea() {
                     setReqInfo((prev) => ({ ...prev, rescale: !prev.rescale }))
                 }} />
             </div>
+            <DownloadButton tileUrl={url} fileName={"COG"} />
         </div>
     )
 }

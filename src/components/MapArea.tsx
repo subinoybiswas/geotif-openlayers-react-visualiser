@@ -11,7 +11,6 @@ import { useGeoData } from '../../contexts/GeoDataProvider';
 import { GeoJSON } from '../../types/geojson';
 import { GetBandMetaData } from '../utils/GetBandMetaData';
 import { calculateCentroid } from '../utils/CalculateCentroid';
-import DownloadButton from './download/DownloadButton';
 
 function MapComponent() {
     const { geoData, url, setUrl, loading, setLoading, reqInfo } = useGeoData();
