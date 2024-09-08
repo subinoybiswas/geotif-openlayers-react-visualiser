@@ -7,6 +7,7 @@ import { useGeoData } from "../../contexts/GeoDataProvider";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import DownloadButton from "./download/DownloadButton";
+import UploadDropzone from "./UploadZone";
 
 export default function MenuArea() {
     const [temp, setTemp] = useState('')
@@ -39,6 +40,7 @@ export default function MenuArea() {
                 }} />
             </div>
             <DownloadButton tileUrl={url} fileName={"COG"} />
+            <UploadDropzone />
         </div>
     )
 }
