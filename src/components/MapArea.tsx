@@ -48,7 +48,7 @@ function MapComponent() {
         });
 
         return () => map.setTarget(undefined)
-    }, [loading]);
+    }, [loading, reqInfo, geoData, url]);
 
     if (loading) {
         return <div>Loading...</div>

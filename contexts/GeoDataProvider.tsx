@@ -29,7 +29,6 @@ export const GeoDataProvider: React.FC<GeoDataProviderProps> = ({ children }) =>
     const [geoData, setGeoData] = useState<GeoJSON | null>(null);
     const [reqInfo, setReqInfo] = useState<RequestInfo>({
         format: "png",
-        colormap_name: "oranges_r",
     });
     const [loading, setLoading] = useState<boolean>(false);
     // Fetch the GeoJSON data when the URL changes
