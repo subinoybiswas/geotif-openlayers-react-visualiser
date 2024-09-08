@@ -13,13 +13,16 @@ import { GetBandMetaData } from '../utils/GetBandMetaData';
 import { calculateCentroid } from '../utils/CalculateCentroid';
 
 function MapComponent() {
-    const { geoData, url, setUrl, loading, setLoading } = useGeoData();
+    const { geoData, url, setUrl, loading, setLoading, reqInfo } = useGeoData();
     useEffect(() => {
         if (geoData === null) {
             return;
         }
         const [longitude, latitude] = calculateCentroid((geoData as GeoJSON).geometry.coordinates);
-        const titilerEndpoint = `${TileEndpoint}?url=${url}&contrast=auto&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
+        let titilerEndpoint = `${TileEndpoint}.${reqInfo.format}?url=${url}&contrast=auto&rescale=${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MINIMUM},${GetBandMetaData(geoData as GeoJSON)[0].STATISTICS_MAXIMUM}`;
+        if (reqInfo.colormap_name) {
+            titilerEndpoint = `${titilerEndpoint}&colormap_name=${reqInfo.colormap_name}`;
+        }
         const osmLayer = new TileLayer({
             preload: Infinity,
             source: new OSM(),

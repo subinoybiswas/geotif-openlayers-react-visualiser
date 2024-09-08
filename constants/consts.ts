@@ -1,2 +1,2 @@
 export const GeoJSONEndpoint = "https://5ng8ntubj6.execute-api.ap-south-1.amazonaws.com/cog/info.geojson"
-export const TileEndpoint = "https://5ng8ntubj6.execute-api.ap-south-1.amazonaws.com/cog/tiles/WorldMercatorWGS84Quad/{z}/{x}/{y}.png"
+export const TileEndpoint = "https://5ng8ntubj6.execute-api.ap-south-1.amazonaws.com/cog/tiles/WorldMercatorWGS84Quad/{z}/{x}/{y}"

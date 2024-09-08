@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { GeoJSON, GeoJSONError } from "../types/geojson.ts";
+import { ColorMap, FileFormat, GeoJSON, GeoJSONError } from "../types/geojson.ts";
 import { GeoJSONEndpoint } from '../constants/consts.ts';
 
 interface GeoDataContextType {
@@ -8,6 +8,8 @@ interface GeoDataContextType {
     setUrl: React.Dispatch<React.SetStateAction<string>>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    reqInfo: RequestInfo;
+    setReqInfo: React.Dispatch<React.SetStateAction<RequestInfo>>;
 
 }
 
@@ -17,9 +19,18 @@ interface GeoDataProviderProps {
     children: React.ReactNode;
 }
 
+interface RequestInfo {
+    format: FileFormat;
+    colormap_name?: ColorMap;
+}
+
 export const GeoDataProvider: React.FC<GeoDataProviderProps> = ({ children }) => {
     const [url, setUrl] = useState<string>("https://final-cog.s3.ap-south-1.amazonaws.com/test_cog.tif");
     const [geoData, setGeoData] = useState<GeoJSON | null>(null);
+    const [reqInfo, setReqInfo] = useState<RequestInfo>({
+        format: "png",
+        colormap_name: "oranges_r",
+    });
     const [loading, setLoading] = useState<boolean>(false);
     // Fetch the GeoJSON data when the URL changes
     useEffect(() => {
@@ -43,7 +54,7 @@ export const GeoDataProvider: React.FC<GeoDataProviderProps> = ({ children }) =>
     }, [url]);
 
     return (
-        <GeoDataContext.Provider value={{ geoData, url, setUrl, loading, setLoading }}>
+        <GeoDataContext.Provider value={{ geoData, url, setUrl, loading, setLoading, reqInfo, setReqInfo }}>
             {children}
         </GeoDataContext.Provider>
     );
