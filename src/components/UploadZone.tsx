@@ -1,10 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-
 const UploadDropzone = () => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    useEffect(() => {
+        const processTiff = async () => {
+            const data = {
+                file_name: "hello.tif"
+            };
+            setProcessing(true);
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/process_tiff`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
 
+                const result = await response.json();
+                console.log('Success:', result);
+                setProcessing(false);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        // Call the async function inside useEffect
+        processTiff();
+
+    }, [uploadedImage]);
     const onDrop = async (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (file && file.type === 'image/tiff') {
@@ -12,7 +38,7 @@ const UploadDropzone = () => {
 
             try {
                 // Step 1: Get the secure URL from the server
-                const response = await fetch("http://localhost:5000/api/upload");
+                const response = await fetch("http://localhost:9000/api/upload");
 
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -49,12 +75,11 @@ const UploadDropzone = () => {
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
-        accept: 'image/tiff',
         maxFiles: 1,
     });
 
     return (
-        <div className="upload-container border-2 min-h-[200px] m-2 rounded-lg flex items-center px-5 text-wrap text-center">
+        <div className="upload-container border-2 min-h-[200px] m-2 rounded-lg flex flex-col items-center px-5 text-wrap text-center">
             {!loading && !uploadedImage && (
                 <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
@@ -64,7 +89,7 @@ const UploadDropzone = () => {
 
             {loading && <p>Uploading...</p>}
 
-            {uploadedImage && (
+            {uploadedImage && !processing && (
                 <div>
                     <h3>Image Uploaded Successfully</h3>
                     <a href={uploadedImage} target="_blank" rel="noopener noreferrer">
@@ -73,6 +98,8 @@ const UploadDropzone = () => {
                     <br />
                 </div>
             )}
+            {uploadedImage && processing && <p>Processing...</p>}
+            {!processing && <p>Successfully Processed!</p>}
         </div>
     );
 };
