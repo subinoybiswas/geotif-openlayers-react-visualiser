@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
@@ -13,7 +13,7 @@ import { GetBandMetaData } from '../utils/GetBandMetaData';
 import { calculateCentroid } from '../utils/CalculateCentroid';
 
 function MapComponent() {
-    const { geoData, url, setUrl, loading, setLoading, reqInfo } = useGeoData();
+    const { geoData, url,  loading, reqInfo } = useGeoData();
     useEffect(() => {
         if (geoData === null) {
             return;
